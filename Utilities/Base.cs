@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
-using Microsoft.Playwright;
+using System.Text.RegularExpressions;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
+using Microsoft.Playwright;
 
 namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
 {
@@ -132,5 +133,85 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             string timeStamp = myDate + " " + myTime;
             return timeStamp;
         }
+
+        public async Task<String> GetItemPrice(IPage currentPage)
+        {
+            ILocator itemPrice = currentPage.Locator("//*[@class='spotlight__price']");
+            string currentItemPrice = "";
+
+            //Getting item price for current item.
+            await itemPrice.WaitForAsync();
+            if (await itemPrice.IsVisibleAsync())
+            {
+                await itemPrice.WaitForAsync();
+                currentItemPrice = await itemPrice.InnerTextAsync();
+            }
+            else
+            {
+                currentItemPrice = "$0";
+            }
+            return currentItemPrice;
+        }
+
+        public async Task<String> GetItemShippingPrice(IPage currentPage)
+        {
+            ILocator shippingPrice = currentPage.Locator("//*[@class='spotlight__shipping']");
+            string currentItemShippingPrice = "";
+
+            //Getting Shipping Price
+            await shippingPrice.WaitForAsync();
+            if (await shippingPrice.IsVisibleAsync())
+            {
+                await shippingPrice.WaitForAsync();
+                currentItemShippingPrice = await shippingPrice.InnerTextAsync();
+
+                if (currentItemShippingPrice.Trim().Equals("Shipping: Included"))
+                    currentItemShippingPrice = "0";
+                else
+                {
+                    Match match = Regex.Match(currentItemShippingPrice, @"\$([0-9]+\.[0-9]{2})");
+                    currentItemShippingPrice = match.Groups[1].Value;
+                }
+            }
+            return currentItemShippingPrice;
+        }
+
+        public async Task<String> GetOtherListings(IPage currentPage)
+        {
+            ILocator listingsAvailable = currentPage.Locator("[class^='view-all-listings__other-listings']");
+            string currentListingsAvailable = "";
+
+            //Getting item listings available
+            await listingsAvailable.WaitForAsync();
+            if (await listingsAvailable.IsVisibleAsync())
+            {
+                await listingsAvailable.WaitForAsync();
+                currentListingsAvailable = await listingsAvailable.InnerTextAsync();
+            }
+            else
+            {
+                currentListingsAvailable = "No other listings";
+            }
+            return currentListingsAvailable;
+        }
+
+        public async Task<String> GetItemMarketPrice(IPage currentPage)
+        {
+            ILocator currentMarketPrice = currentPage.Locator("//tr[td[text()='Market Price']]/td[2]");
+            string currentItemMarketPrice = "";
+
+            await currentMarketPrice.WaitForAsync();
+            if (await currentMarketPrice.IsVisibleAsync())
+            {
+                await currentMarketPrice.WaitForAsync();
+                currentItemMarketPrice = await currentMarketPrice.InnerTextAsync();
+            }
+            else
+            {
+                currentItemMarketPrice = "0";
+            }
+            return currentItemMarketPrice;
+        }
+
     }
 }

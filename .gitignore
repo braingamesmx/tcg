@@ -7,3 +7,20 @@ obj/
 
 # Archivos de Playwright locales
 .net/
+
+# --- AGREGAR ESTO AL FINAL ---
+# Visual Studio junk anywhere in the repository
+**/.vs/
+**/v17/
+**/v18/
+**/*.suo
+**/*.testlog
+**/TestStore/
+**/DesignTimeBuild/
+
+# Copilot and indexing caches anywhere
+**/CopilotIndices/
+**/FileContentIndex/
+**/*.db
+**/*.db-shm
+**/*.db-wal
