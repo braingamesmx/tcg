@@ -1,0 +1,9 @@
+# Archivos de credenciales de Google
+credentials.json
+
+# Archivos de compilación de .NET
+bin/
+obj/
+
+# Archivos de Playwright locales
+.net/
