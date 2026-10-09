@@ -30,12 +30,14 @@ jobs:
     - name: Install Playwright Browsers (Chromium)
       run: playwright install chromium
 
-    - name: Create credentials.json from GitHub Secret
+    - name: Create credentials.json in output directory
       shell: pwsh
       run: |
-        $env:GOOGLE_CREDENTIALS_JSON | Out-File -Encoding utf8 credentials.json
+        $path = "bin/Debug/net9.0"
+        if (!(Test-Path $path)) { New-Item -ItemType Directory -Path $path -Force }
+        $env:GOOGLE_CREDENTIALS_JSON | Out-File -Encoding utf8 "$path/credentials.json"
       env:
         GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
-
+        
     - name: Run Tests & Push to Google Sheets
       run: dotnet test --no-build --verbosity normal
