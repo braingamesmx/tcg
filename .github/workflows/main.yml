@@ -1,0 +1,41 @@
+name: TCGPlayer Price Scrapper
+
+on:
+  workflow_dispatch: # Permite ejecutarlo manualmente desde la pestaña Actions
+  schedule:
+    - cron: '0 8 * * *' # Opcional: Ejecutar todos los días a las 8:00 UTC
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest # Windows suele ser ideal para mantener compatibilidad con rutas de C#
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x' # Asegúrate de que coincida con tu versión de .NET (.NET 9)
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build Project
+      run: dotnet build --no-restore
+
+    - name: Install Playwright CLI
+      run: dotnet tool install --global Microsoft.Playwright.CLI
+
+    - name: Install Playwright Browsers (Chromium)
+      run: playwright install chromium
+
+    - name: Create credentials.json from GitHub Secret
+      shell: pwsh
+      run: |
+        $env:GOOGLE_CREDENTIALS_JSON | Out-File -Encoding utf8 credentials.json
+      env:
+        GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+
+    - name: Run Tests & Push to Google Sheets
+      run: dotnet test --no-build --verbosity normal
