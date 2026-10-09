@@ -27,7 +27,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
 
         // Configuración de tu Google Sheet
         protected const string SpreadsheetId = "1xK3muMQsNsTTOC3w64AvusEHG79r_6q5yo0c1zgmAdU";
-        protected const string SheetRange = "Reality Fracture Tracker!A4:I";
+        protected const string SheetRange = "SealedItemsPriceTracker!A4:I";
         protected const string CredentialsFilePath = "credentials.json";
 
         /// <summary>
