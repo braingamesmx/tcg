@@ -63,7 +63,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
                 });
 
                 // Fetch existing content from rows 4 to 100 to find your manual column H data
-                string readRange = "Reality Fracture Tracker!A4:I100";
+                string readRange = "SealedItemsPriceTracker!A4:I";
                 var spreadSheetRequest = service.Spreadsheets.Values.Get(SpreadsheetId, readRange);
                 var response = spreadSheetRequest.Execute();
                 var values = response.Values;
@@ -87,7 +87,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
                 }
 
                 // Clear everything from row 4 downwards across columns A through I
-                string rangeToClear = "Reality Fracture Tracker!A4:I";
+                string rangeToClear = "SealedItemsPriceTracker!A4:I";
                 var clearRequest = service.Spreadsheets.Values.Clear(new ClearValuesRequest(), SpreadsheetId, rangeToClear);
                 clearRequest.Execute();
 
