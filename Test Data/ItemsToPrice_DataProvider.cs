@@ -10,7 +10,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Test_Data
     {
         public static IEnumerable<TestCaseData> ListOfItems()
         {
-            // **************************   ************  Datos para Pokemon            
+            // **************************   ************  Datos para Pokemon         
             yield return new TestCaseData("196214158801", "704143", "30th Celebration Elite Trainer Box", "https://www.tcgplayer.com/product/704143");            
             yield return new TestCaseData("196214158726", "704168", "30th Celebration Greninja ex Box", "https://www.tcgplayer.com/product/704168");
             yield return new TestCaseData("196214158757", "704153", "30th Celebration Poster Collection", "https://www.tcgplayer.com/product/704153");
@@ -88,7 +88,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Test_Data
             yield return new TestCaseData("810158837225", "666891", "Extra Booster: One Piece Heroines Edition Box - Extra Booster EB03", "https://www.tcgplayer.com/product/666891");
 
 
-
+            
             // **************************   ************  Datos para Riftbound
             yield return new TestCaseData("810155273248", "635368", "Origins - Booster Display", "https://www.tcgplayer.com/product/635368");
             yield return new TestCaseData("810155273583", "661934", "Spiritforged - Booster Display", "https://www.tcgplayer.com/product/661934");

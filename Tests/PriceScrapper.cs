@@ -35,24 +35,17 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Tests
 
             decimal totalUsd = basePriceVal + shippingVal;
 
-            // Check if there's a previously typed manual price for this Item Number
-            string columnHValue = "";
-            if (SavedManualPrices.ContainsKey(itemNumber.Trim()))
-            {
-                columnHValue = SavedManualPrices[itemNumber.Trim()];
-            }
-
-            // Añadiendo el registro al buffer de Google Sheets en orden de las 9 columnas (A a I):
+            // El buffer ahora contiene exactamente 8 columnas (A a H).
+            // La columna I (Precio Mínimo) no se añade aquí, manteniéndose intacta en la hoja.
             sheetRows.Add(new List<object> {
                 barCode,                                     // A: Código de Escáner (UPC / Barcode)
                 itemNumber,                                  // B: TCGplayer Item #
                 itemName,                                    // C: Producto Sellado
                 currentItemPrice,                            // D: Precio Base TCG (USD)
                 currentItemShippingPrice,                    // E: Envío / Shipping (USD)
-                totalUsd.ToString("F2"),                    // F: Precio Total USD
+                totalUsd.ToString("F2"),                     // F: Precio Total USD
                 $"=F{NextRowIndex}*$C$1",                    // G: Precio Total MXN (Live Formula)
-                columnHValue,                                // H: Precio Mínimo de Venta (Preserves your manual text!)
-                itemURL                                      // I: Enlace TCGplayer
+                itemURL                                      // H: Enlace TCGplayer
             });
 
             NextRowIndex++;

@@ -22,16 +22,13 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
         // Tracks rows dynamically starting at Row 4
         public int NextRowIndex = 4;
 
-        // Holds manually entered Column H items (Key: ItemNumber/ID, Value: Manual Price)
-        public Dictionary<string, string> SavedManualPrices = new Dictionary<string, string>();
-
-        // Configuración de tu Google Sheet
+        // Configuración de tu Google Sheet (Restringido estrictamente a las columnas de la A a la H)
         protected const string SpreadsheetId = "1xK3muMQsNsTTOC3w64AvusEHG79r_6q5yo0c1zgmAdU";
-        protected const string SheetRange = "SealedItemsPriceTracker!A4:I";
+        protected const string SheetRange = "SealedItemsPriceTracker!A4:H";
         protected const string CredentialsFilePath = "credentials.json";
 
         /// <summary>
-        /// Inicializa el cronómetro de ejecución, guarda entradas manuales y limpia datos viejos.
+        /// Inicializa el cronómetro de ejecución y limpia los datos viejos de las columnas automatizadas.
         /// </summary>
         [OneTimeSetUp]
         public void CreateSheetHeader()
@@ -39,14 +36,14 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            // 1. Backup manual entries from Column H, then clear stale data rows
-            BackupAndClearSheetData();
+            // Limpia únicamente el rango automatizado (Columnas A-H)
+            ClearStaleSheetData();
         }
 
         /// <summary>
-        /// Resguarda los precios manuales de la columna H y limpia el rango principal.
+        /// Limpia el rango principal de la automatización (A4:H) sin tocar la columna I.
         /// </summary>
-        private void BackupAndClearSheetData()
+        private void ClearStaleSheetData()
         {
             try
             {
@@ -62,40 +59,16 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
                     ApplicationName = "TCGPlayer Price Scrapper"
                 });
 
-                // Fetch existing content from rows 4 to 100 to find your manual column H data
-                string readRange = "SealedItemsPriceTracker!A4:I";
-                var spreadSheetRequest = service.Spreadsheets.Values.Get(SpreadsheetId, readRange);
-                var response = spreadSheetRequest.Execute();
-                var values = response.Values;
-
-                if (values != null)
-                {
-                    foreach (var row in values)
-                    {
-                        // Column B is Item# (Index 1), Column H is Price Minimo (Index 7)
-                        if (row.Count > 1 && !string.IsNullOrWhiteSpace(row[1]?.ToString()))
-                        {
-                            string itemNumKey = row[1].ToString().Trim();
-                            string manualPriceVal = (row.Count > 7) ? row[7]?.ToString()?.Trim() : "";
-
-                            if (!string.IsNullOrEmpty(manualPriceVal) && itemNumKey != "Execution Complete")
-                            {
-                                SavedManualPrices[itemNumKey] = manualPriceVal;
-                            }
-                        }
-                    }
-                }
-
-                // Clear everything from row 4 downwards across columns A through I
-                string rangeToClear = "SealedItemsPriceTracker!A4:I";
+                // Limpia desde la fila 4 hacia abajo cruzando solo de la A hasta la H
+                string rangeToClear = "SealedItemsPriceTracker!A4:H";
                 var clearRequest = service.Spreadsheets.Values.Clear(new ClearValuesRequest(), SpreadsheetId, rangeToClear);
                 clearRequest.Execute();
 
-                Console.WriteLine($"Saved {SavedManualPrices.Count} manual entries. Stale rows wiped from Tracker.");
+                Console.WriteLine("Stale rows wiped from Tracker (Columns A to H). Column I preserved safely.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Warning: Failed to process sheet backup/clear: {ex.Message}");
+                Console.WriteLine($"Warning: Failed to clear automated sheet columns: {ex.Message}");
             }
         }
 
@@ -112,7 +85,8 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             Console.WriteLine("Elapsed Time is {0:00}:{1:00}:{2:00}.{3}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
             string executionTime = ts.Hours + ":" + ts.Minutes + ":" + ts.Seconds;
 
-            sheetRows.Add(new List<object> { "999", "Execution Complete", "Created on " + timeStamp, "", "", "", executionTime, "", "" });
+            // Fila final ajustada a 8 columnas de ancho (A a H)
+            sheetRows.Add(new List<object> { "999", "Execution Complete", "Created on " + timeStamp, "", "", "", executionTime, "" });
 
             PushDataToGoogleSheet();
         }
