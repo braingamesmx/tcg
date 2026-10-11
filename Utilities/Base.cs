@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Runtime.Intrinsics.Arm;
-using System.Text;
 using System.Text.RegularExpressions;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
@@ -13,36 +11,114 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
 {
     public class Base
     {
-        public IPage page;
-        public IBrowser browser;
-        public List<IList<object>> sheetRows = new List<IList<object>>(); // Buffer para los datos
+        protected static IPlaywright playwright;
+        protected static IBrowser browser;
+
+        protected static readonly object _sheetLock = new object();
+
+        // Contiene los datos raspados junto con su índice de orden original
+        public List<(int SortIndex, IList<object> RowData)> pendingRows = new List<(int, IList<object>)>();
+        public List<IList<object>> sheetRows = new List<IList<object>>();
+
         public string timeStamp;
         Stopwatch stopwatch;
 
-        // Tracks rows dynamically starting at Row 4
-        public int NextRowIndex = 4;
-
-        // Configuración de tu Google Sheet (Restringido a las columnas de la A a la K)
         protected const string SpreadsheetId = "1xK3muMQsNsTTOC3w64AvusEHG79r_6q5yo0c1zgmAdU";
         protected const string SheetRange = "SealedItemsPriceTracker!A4:K";
         protected const string CredentialsFilePath = "credentials.json";
 
-        /// <summary>
-        /// Inicializa el cronómetro de ejecución y limpia los datos viejos de las columnas automatizadas.
-        /// </summary>
         [OneTimeSetUp]
-        public void CreateSheetHeader()
+        public async Task OneTimeSetup()
         {
             stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            // Limpia únicamente el rango automatizado (Columnas A-K)
             ClearStaleSheetData();
+
+            playwright = await Playwright.CreateAsync();
+            bool runHeadless = true;
+
+            browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            {
+                Headless = runHeadless,
+                Args = runHeadless
+                    ? new[] { "--headless=new", "--disable-blink-features=AutomationControlled" }
+                    : new[] { "--disable-blink-features=AutomationControlled" }
+            });
+        }
+
+        [OneTimeTearDown]
+        public async Task OneTimeTearDown()
+        {
+            if (browser != null) await browser.CloseAsync();
+            playwright?.Dispose();
+
+            // 1. Ordena los resultados al orden exacto del Test Data Provider
+            var sortedRows = pendingRows.OrderBy(r => r.SortIndex).ToList();
+
+            // 2. Asigna fórmulas secuenciales en orden de arriba hacia abajo (iniciando en fila 4)
+            int rowIndex = 4;
+            foreach (var item in sortedRows)
+            {
+                var d = item.RowData;
+                sheetRows.Add(new List<object> {
+                    d[0],                                           // A: Barcode
+                    d[1],                                           // B: Item #
+                    d[2],                                           // C: Nombre
+                    d[3],                                           // D: Base USD
+                    d[4],                                           // E: Shipping USD
+                    d[5],                                           // F: Total USD
+                    $"=F{rowIndex}*$C$1*(1 - K{rowIndex})",         // G: Total MXN Formula
+                    d[6],                                           // H: URL
+                    d[7],                                           // I: Min USD
+                    $"=I{rowIndex}*$C$1",                           // J: Min MXN Formula
+                    d[8]                                            // K: Descuento
+                });
+
+                rowIndex++;
+            }
+
+            timeStamp = CreateTimeStamp();
+            stopwatch.Stop();
+            TimeSpan ts = stopwatch.Elapsed;
+            Console.WriteLine(); Console.WriteLine();
+            Console.WriteLine("Elapsed Time is {0:00}:{1:00}:{2:00}.{3}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
+            string executionTime = ts.Hours + ":" + ts.Minutes + ":" + ts.Seconds;
+
+            sheetRows.Add(new List<object> { "999", "Execution Complete", "Created on " + timeStamp, "", "", "", executionTime, "", "", "", "" });
+
+            PushDataToGoogleSheet();
+        }
+
+        public async Task<(IBrowserContext Context, IPage Page)> CreateIsolatedPageAsync()
+        {
+            var context = await browser.NewContextAsync(new BrowserNewContextOptions
+            {
+                UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                ViewportSize = new ViewportSize { Width = 1920, Height = 1080 },
+                ExtraHTTPHeaders = new Dictionary<string, string>
+                {
+                    { "sec-ch-ua", @"""Not_A Brand"";v=""8"", ""Chromium"";v=""120"", ""Google Chrome"";v=""120""" },
+                    { "sec-ch-ua-mobile", "?0" },
+                    { "sec-ch-ua-platform", @"""Windows""" }
+                }
+            });
+
+            var page = await context.NewPageAsync();
+            return (context, page);
         }
 
         /// <summary>
-        /// Limpia el rango principal de la automatización (A4:K).
+        /// Agrega de forma segura los datos raspados junto con su Sort Index original.
         /// </summary>
+        public void AddPendingRow(int sortIndex, IList<object> rawRow)
+        {
+            lock (_sheetLock)
+            {
+                pendingRows.Add((sortIndex, rawRow));
+            }
+        }
+
         private void ClearStaleSheetData()
         {
             try
@@ -59,36 +135,16 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
                     ApplicationName = "TCGPlayer Price Scrapper"
                 });
 
-                // Limpia desde la fila 4 hacia abajo cruzando de la A hasta la K
-                string rangeToClear = "SealedItemsPriceTracker!A4:K";
+                string rangeToClear = "SealedItemsPriceTracker!A4:K2000";
                 var clearRequest = service.Spreadsheets.Values.Clear(new ClearValuesRequest(), SpreadsheetId, rangeToClear);
                 clearRequest.Execute();
 
-                Console.WriteLine("Stale rows wiped from Tracker (Columns A to K).");
+                Console.WriteLine("Stale rows wiped from Tracker (Columns A to K down to row 2000).");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Warning: Failed to clear automated sheet columns: {ex.Message}");
             }
-        }
-
-        /// <summary>
-        /// Envía todos los registros acumulados y métricas de tiempo a Google Sheets al finalizar las pruebas.
-        /// </summary>
-        [OneTimeTearDown]
-        public void CollectAllData()
-        {
-            timeStamp = CreateTimeStamp();
-            stopwatch.Stop();
-            TimeSpan ts = stopwatch.Elapsed;
-            Console.WriteLine(); Console.WriteLine();
-            Console.WriteLine("Elapsed Time is {0:00}:{1:00}:{2:00}.{3}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
-            string executionTime = ts.Hours + ":" + ts.Minutes + ":" + ts.Seconds;
-
-            // Fila final ajustada a 11 columnas de ancho (A a K)
-            sheetRows.Add(new List<object> { "999", "Execution Complete", "Created on " + timeStamp, "", "", "", executionTime, "", "", "", "" });
-
-            PushDataToGoogleSheet();
         }
 
         private void PushDataToGoogleSheet()
@@ -111,40 +167,6 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             updateRequest.Execute();
         }
 
-        [SetUp]
-        public async Task SetupBrowser()
-        {
-            IPlaywright playwright = await Playwright.CreateAsync();
-            bool runHeadless = true;
-
-            browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-            {
-                Headless = runHeadless,
-                Args = runHeadless
-                    ? new[] { "--headless=new", "--disable-blink-features=AutomationControlled" }
-                    : new[] { "--disable-blink-features=AutomationControlled" }
-            });
-
-            var context = await browser.NewContextAsync(new BrowserNewContextOptions
-            {
-                UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                ViewportSize = new ViewportSize { Width = 1920, Height = 1080 },
-                ExtraHTTPHeaders = new Dictionary<string, string>
-                {
-                    { "sec-ch-ua", @"""Not_A Brand"";v=""8"", ""Chromium"";v=""120"", ""Google Chrome"";v=""120""" },
-                    { "sec-ch-ua-mobile", "?0" },
-                    { "sec-ch-ua-platform", @"""Windows""" }
-                }
-            });
-
-            page = await context.NewPageAsync();
-        }
-
-        [TearDown]
-        public async Task TearDownBrowser() => await browser.CloseAsync();
-        public IPage ReturnPage() => page;
-        public IBrowser ReturnBrowser() => browser;
-
         public static string CreateTimeStamp()
         {
             var currentTime = DateTime.Now;
@@ -153,7 +175,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             return myDate + " " + myTime;
         }
 
-        public async Task<String> GetItemPrice(IPage currentPage)
+        public async Task<string> GetItemPrice(IPage currentPage)
         {
             try
             {
@@ -161,13 +183,10 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
                 await itemPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
                 return await itemPrice.IsVisibleAsync() ? await itemPrice.InnerTextAsync() : "$0";
             }
-            catch
-            {
-                return "$0";
-            }
+            catch { return "$0"; }
         }
 
-        public async Task<String> GetItemShippingPrice(IPage currentPage)
+        public async Task<string> GetItemShippingPrice(IPage currentPage)
         {
             try
             {
@@ -185,7 +204,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             return "0";
         }
 
-        public async Task<String> GetOtherListings(IPage currentPage)
+        public async Task<string> GetOtherListings(IPage currentPage)
         {
             try
             {
@@ -193,13 +212,10 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
                 await listingsAvailable.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
                 return await listingsAvailable.IsVisibleAsync() ? await listingsAvailable.InnerTextAsync() : "No other listings";
             }
-            catch
-            {
-                return "No other listings";
-            }
+            catch { return "No other listings"; }
         }
 
-        public async Task<String> GetItemMarketPrice(IPage currentPage)
+        public async Task<string> GetItemMarketPrice(IPage currentPage)
         {
             try
             {
@@ -207,10 +223,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
                 await currentMarketPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
                 return await currentMarketPrice.IsVisibleAsync() ? await currentMarketPrice.InnerTextAsync() : "0";
             }
-            catch
-            {
-                return "0";
-            }
+            catch { return "0"; }
         }
     }
 }
