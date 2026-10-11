@@ -3,11 +3,11 @@ name: TCGPlayer Price Scrapper
 on:
   workflow_dispatch: # Permite ejecutarlo manualmente desde la pestaña Actions
   schedule:
-    - cron: '0 18 * * *' # Opcional: Ejecutar todos los días a las 8:00 UTC
+    - cron: '0 18 * * *' # Opcional: Ejecutar todos los días a las 18:00 UTC
 
 jobs:
   build-and-test:
-    runs-on: windows-latest # Windows suele ser ideal para mantener compatibilidad con rutas de C#
+    runs-on: windows-latest
 
     steps:
     - name: Checkout Repository
@@ -16,7 +16,15 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x' # Asegúrate de que coincida con tu versión de .NET (.NET 9)
+        dotnet-version: '9.0.x'
+
+    # 1. Create credentials.json BEFORE restoring and building
+    - name: Create credentials.json in root directory
+      shell: pwsh
+      run: |
+        $env:GOOGLE_CREDENTIALS_JSON | Out-File -Encoding utf8 "credentials.json"
+      env:
+        GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
 
     - name: Restore Dependencies
       run: dotnet restore
@@ -29,15 +37,6 @@ jobs:
 
     - name: Install Playwright Browsers (Chromium)
       run: playwright install chromium
-
-    - name: Create credentials.json in output directory
-      shell: pwsh
-      run: |
-        $path = "bin/Debug/net9.0"
-        if (!(Test-Path $path)) { New-Item -ItemType Directory -Path $path -Force }
-        $env:GOOGLE_CREDENTIALS_JSON | Out-File -Encoding utf8 "$path/credentials.json"
-      env:
-        GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
         
     - name: Run Tests & Push to Google Sheets
       run: dotnet test --no-build --verbosity normal
