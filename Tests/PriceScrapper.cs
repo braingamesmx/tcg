@@ -13,7 +13,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Tests
     public class Tests : Base
     {
         [Test, TestCaseSource(typeof(ItemsToPrice_DataProvider), nameof(ItemsToPrice_DataProvider.ListOfItems))]
-        public async Task GetItemPrice(string barCode, string itemNumber, string itemName, string itemURL)
+        public async Task GetItemPrice(string barCode, string itemNumber, string itemName, string itemURL, decimal minPriceUsd, decimal discount)
         {
             IPage currentPage = ReturnPage();
             await currentPage.GotoAsync(itemURL);
@@ -35,17 +35,19 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Tests
 
             decimal totalUsd = basePriceVal + shippingVal;
 
-            // El buffer ahora contiene exactamente 8 columnas (A a H).
-            // La columna I (Precio Mínimo) no se añade aquí, manteniéndose intacta en la hoja.
+            // El buffer ahora contiene exactamente 11 columnas (A a K).
             sheetRows.Add(new List<object> {
-                barCode,                                     // A: Código de Escáner (UPC / Barcode)
-                itemNumber,                                  // B: TCGplayer Item #
-                itemName,                                    // C: Producto Sellado
-                currentItemPrice,                            // D: Precio Base TCG (USD)
-                currentItemShippingPrice,                    // E: Envío / Shipping (USD)
-                totalUsd.ToString("F2"),                     // F: Precio Total USD
-                $"=F{NextRowIndex}*$C$1",                    // G: Precio Total MXN (Live Formula)
-                itemURL                                      // H: Enlace TCGplayer
+                barCode,                                          // A: Código de Escáner (UPC / Barcode)
+                itemNumber,                                       // B: TCGplayer Item #
+                itemName,                                         // C: Producto Sellado
+                currentItemPrice,                                 // D: Precio Base TCG (USD)
+                currentItemShippingPrice,                         // E: Envío / Shipping (USD)
+                totalUsd.ToString("F2"),                          // F: Precio Total USD
+                $"=F{NextRowIndex}*$C$1*(1 - K{NextRowIndex})",   // G: Precio Total MXN (Con Descuento Aplicado)
+                itemURL,                                          // H: Enlace TCGplayer
+                minPriceUsd,                                      // I: Precio Minimo de Venta (USD)
+                $"=I{NextRowIndex}*$C$1",                         // J: PrecioPesosMinimo de Venta (MXN Directo)
+                discount                                          // K: Descuento Actual (e.g. 0.15 para 15%)
             });
 
             NextRowIndex++;

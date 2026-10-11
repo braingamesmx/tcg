@@ -22,9 +22,9 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
         // Tracks rows dynamically starting at Row 4
         public int NextRowIndex = 4;
 
-        // Configuración de tu Google Sheet (Restringido estrictamente a las columnas de la A a la H)
+        // Configuración de tu Google Sheet (Restringido a las columnas de la A a la K)
         protected const string SpreadsheetId = "1xK3muMQsNsTTOC3w64AvusEHG79r_6q5yo0c1zgmAdU";
-        protected const string SheetRange = "SealedItemsPriceTracker!A4:H";
+        protected const string SheetRange = "SealedItemsPriceTracker!A4:K";
         protected const string CredentialsFilePath = "credentials.json";
 
         /// <summary>
@@ -36,12 +36,12 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            // Limpia únicamente el rango automatizado (Columnas A-H)
+            // Limpia únicamente el rango automatizado (Columnas A-K)
             ClearStaleSheetData();
         }
 
         /// <summary>
-        /// Limpia el rango principal de la automatización (A4:H) sin tocar la columna I.
+        /// Limpia el rango principal de la automatización (A4:K).
         /// </summary>
         private void ClearStaleSheetData()
         {
@@ -59,12 +59,12 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
                     ApplicationName = "TCGPlayer Price Scrapper"
                 });
 
-                // Limpia desde la fila 4 hacia abajo cruzando solo de la A hasta la H
-                string rangeToClear = "SealedItemsPriceTracker!A4:H";
+                // Limpia desde la fila 4 hacia abajo cruzando de la A hasta la K
+                string rangeToClear = "SealedItemsPriceTracker!A4:K";
                 var clearRequest = service.Spreadsheets.Values.Clear(new ClearValuesRequest(), SpreadsheetId, rangeToClear);
                 clearRequest.Execute();
 
-                Console.WriteLine("Stale rows wiped from Tracker (Columns A to H). Column I preserved safely.");
+                Console.WriteLine("Stale rows wiped from Tracker (Columns A to K).");
             }
             catch (Exception ex)
             {
@@ -85,8 +85,8 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             Console.WriteLine("Elapsed Time is {0:00}:{1:00}:{2:00}.{3}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
             string executionTime = ts.Hours + ":" + ts.Minutes + ":" + ts.Seconds;
 
-            // Fila final ajustada a 8 columnas de ancho (A a H)
-            sheetRows.Add(new List<object> { "999", "Execution Complete", "Created on " + timeStamp, "", "", "", executionTime, "" });
+            // Fila final ajustada a 11 columnas de ancho (A a K)
+            sheetRows.Add(new List<object> { "999", "Execution Complete", "Created on " + timeStamp, "", "", "", executionTime, "", "", "", "" });
 
             PushDataToGoogleSheet();
         }
@@ -106,9 +106,9 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             });
 
             var valueRange = new ValueRange { Values = sheetRows };
-            var appendRequest = service.Spreadsheets.Values.Append(valueRange, SpreadsheetId, SheetRange);
-            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-            appendRequest.Execute();
+            var updateRequest = service.Spreadsheets.Values.Update(valueRange, SpreadsheetId, SheetRange);
+            updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+            updateRequest.Execute();
         }
 
         [SetUp]
@@ -155,37 +155,62 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
 
         public async Task<String> GetItemPrice(IPage currentPage)
         {
-            ILocator itemPrice = currentPage.Locator("//*[@class='spotlight__price']");
-            await itemPrice.WaitForAsync();
-            return await itemPrice.IsVisibleAsync() ? await itemPrice.InnerTextAsync() : "$0";
+            try
+            {
+                ILocator itemPrice = currentPage.Locator("//*[@class='spotlight__price']");
+                await itemPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+                return await itemPrice.IsVisibleAsync() ? await itemPrice.InnerTextAsync() : "$0";
+            }
+            catch
+            {
+                return "$0";
+            }
         }
 
         public async Task<String> GetItemShippingPrice(IPage currentPage)
         {
-            ILocator shippingPrice = currentPage.Locator("//*[@class='spotlight__shipping']");
-            await shippingPrice.WaitForAsync();
-            if (await shippingPrice.IsVisibleAsync())
+            try
             {
-                string shipText = await shippingPrice.InnerTextAsync();
-                if (shipText.Trim().Equals("Shipping: Included")) return "0";
-                Match match = Regex.Match(shipText, @"\$([0-9]+\.[0-9]{2})");
-                return match.Groups[1].Value;
+                ILocator shippingPrice = currentPage.Locator("//*[@class='spotlight__shipping']");
+                await shippingPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+                if (await shippingPrice.IsVisibleAsync())
+                {
+                    string shipText = await shippingPrice.InnerTextAsync();
+                    if (shipText.Trim().Equals("Shipping: Included")) return "0";
+                    Match match = Regex.Match(shipText, @"\$([0-9]+\.[0-9]{2})");
+                    return match.Groups[1].Value;
+                }
             }
+            catch { }
             return "0";
         }
 
         public async Task<String> GetOtherListings(IPage currentPage)
         {
-            ILocator listingsAvailable = currentPage.Locator("[class^='view-all-listings__other-listings']");
-            await listingsAvailable.WaitForAsync();
-            return await listingsAvailable.IsVisibleAsync() ? await listingsAvailable.InnerTextAsync() : "No other listings";
+            try
+            {
+                ILocator listingsAvailable = currentPage.Locator("[class^='view-all-listings__other-listings']");
+                await listingsAvailable.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+                return await listingsAvailable.IsVisibleAsync() ? await listingsAvailable.InnerTextAsync() : "No other listings";
+            }
+            catch
+            {
+                return "No other listings";
+            }
         }
 
         public async Task<String> GetItemMarketPrice(IPage currentPage)
         {
-            ILocator currentMarketPrice = currentPage.Locator("//tr[td[text()='Market Price']]/td[2]");
-            await currentMarketPrice.WaitForAsync();
-            return await currentMarketPrice.IsVisibleAsync() ? await currentMarketPrice.InnerTextAsync() : "0";
+            try
+            {
+                ILocator currentMarketPrice = currentPage.Locator("//tr[td[text()='Market Price']]/td[2]");
+                await currentMarketPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+                return await currentMarketPrice.IsVisibleAsync() ? await currentMarketPrice.InnerTextAsync() : "0";
+            }
+            catch
+            {
+                return "0";
+            }
         }
     }
 }
