@@ -3,7 +3,7 @@ using TCGPlayerPriceScrapper_PlaywrightVersion.Test_Data;
 using TCGPlayerPriceScrapper_PlaywrightVersion.Utilities;
 
 [assembly: Parallelizable(ParallelScope.Children)]
-[assembly: LevelOfParallelism(4)]
+[assembly: LevelOfParallelism(1)]
 
 namespace TCGPlayerPriceScrapper_PlaywrightVersion.Tests
 {

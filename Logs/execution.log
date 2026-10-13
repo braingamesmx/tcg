@@ -1,0 +1,22 @@
+=== TCGPlayer Scraper Log Run Started: 10/13/2026 10:09:12 AM ===
+
+[10:09:12] Stale rows wiped from Tracker (Columns A to K down to row 2000).
+[10:09:17] [Item #648686] Avatar: The Last Airbender - Commander's Bundle | Scraped Raw -> Base: '$170.00', Shipping: '4.99', Market: '$170.09'
+[10:09:21] [Item #648643] Avatar: The Last Airbender - Play Booster Display | Scraped Raw -> Base: '$125.79', Shipping: '0', Market: '$129.35'
+[10:09:21]   [OVERRIDE] Market Price ($129.35) > Scraped Total ($125.79). Overriding calculation to Market Price.
+[10:09:25] [Item #541235] Bloomburrow - Play Booster Display | Scraped Raw -> Base: '$208.34', Shipping: '0', Market: '$204.93'
+[10:09:29] [Item #618890] FINAL FANTASY - Play Booster Display | Scraped Raw -> Base: '$249.99', Shipping: '0', Market: '$257.08'
+[10:09:29]   [OVERRIDE] Market Price ($257.08) > Scraped Total ($249.99). Overriding calculation to Market Price.
+[10:09:32] [Item #656340] Lorwyn Eclipsed - Bundle | Scraped Raw -> Base: '$68.00', Shipping: '0', Market: '$66.93'
+[10:09:37] [Item #656322] Lorwyn Eclipsed - Collector Booster Display | Scraped Raw -> Base: '$415.97', Shipping: '0', Market: '$415.33'
+[10:09:40] [Item #656312] Lorwyn Eclipsed - Play Booster Display | Scraped Raw -> Base: '$102.96', Shipping: '8.99', Market: '$112.65'
+[10:09:40]   [OVERRIDE] Market Price ($112.65) > Scraped Total ($111.95). Overriding calculation to Market Price.
+[10:09:45] [Item #675615] Marvel Super Heroes - Bundle | Scraped Raw -> Base: '$41.20', Shipping: '0', Market: '$39.83'
+[10:09:49] [Item #675625] Marvel Super Heroes - Draft Night | Scraped Raw -> Base: '$81.00', Shipping: '8.99', Market: '$87.38'
+[10:09:52] [Item #675617] Marvel Super Heroes - Gift Bundle | Scraped Raw -> Base: '$65.00', Shipping: '7.99', Market: '$73.46'
+[10:09:52]   [OVERRIDE] Market Price ($73.46) > Scraped Total ($72.99). Overriding calculation to Market Price.
+[10:09:56] [Item #675603] Marvel Super Heroes - Play Booster Display | Scraped Raw -> Base: '$109.94', Shipping: '0', Market: '$111.84'
+[10:09:56]   [OVERRIDE] Market Price ($111.84) > Scraped Total ($109.94). Overriding calculation to Market Price.
+[10:10:00] [Item #675634] Marvel Super Heroes Commander Deck - Avengers Assemble | Scraped Raw -> Base: '$47.48', Shipping: '0', Market: '$46.03'
+[10:10:00] === Execution Finished in 00:00:48.370 ===
+[10:10:01] Successfully updated Google Sheet with scraped data.

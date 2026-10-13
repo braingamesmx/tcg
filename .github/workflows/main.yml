@@ -46,4 +46,6 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: execution-log
-        path: execution.log
+        path: |
+          Logs/execution.log
+          **/Logs/execution.log

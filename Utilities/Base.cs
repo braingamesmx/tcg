@@ -26,7 +26,23 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
         protected const string SpreadsheetId = "1xK3muMQsNsTTOC3w64AvusEHG79r_6q5yo0c1zgmAdU";
         protected const string SheetRange = "SealedItemsPriceTracker!A4:K";
         protected const string CredentialsFilePath = "credentials.json";
-        protected static string LogFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "execution.log");
+
+        // Traverses up from bin/Debug/net9.0/ to find the root project folder containing .csproj
+        protected static string ProjectRootDirectory
+        {
+            get
+            {
+                var dir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+                while (dir != null && !File.Exists(Path.Combine(dir.FullName, "TCGPlayerPriceScrapper_PlaywrightVersion.csproj")))
+                {
+                    dir = dir.Parent;
+                }
+                return dir?.FullName ?? AppDomain.CurrentDomain.BaseDirectory;
+            }
+        }
+
+        protected static string LogDirectory => Path.Combine(ProjectRootDirectory, "Logs");
+        protected static string LogFilePath => Path.Combine(LogDirectory, "execution.log");
 
         [OneTimeSetUp]
         public async Task OneTimeSetup()
@@ -34,7 +50,13 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            // Overwrite log file for a fresh execution run
+            // Creates the Logs folder inside the root project directory if missing
+            if (!Directory.Exists(LogDirectory))
+            {
+                Directory.CreateDirectory(LogDirectory);
+            }
+
+            // Overwrites log file for a fresh execution run
             lock (_logLock)
             {
                 File.WriteAllText(LogFilePath, $"=== TCGPlayer Scraper Log Run Started: {DateTime.Now} ===\n\n");
@@ -206,7 +228,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             try
             {
                 ILocator itemPrice = currentPage.Locator("//*[@class='spotlight__price']");
-                await itemPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
+                await itemPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 18000 });
                 return await itemPrice.IsVisibleAsync() ? await itemPrice.InnerTextAsync() : "$0";
             }
             catch { return "$0"; }
@@ -217,7 +239,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             try
             {
                 ILocator shippingPrice = currentPage.Locator("//*[@class='spotlight__shipping']");
-                await shippingPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+                await shippingPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
                 if (await shippingPrice.IsVisibleAsync())
                 {
                     string shipText = await shippingPrice.InnerTextAsync();
@@ -235,7 +257,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             try
             {
                 ILocator listingsAvailable = currentPage.Locator("[class^='view-all-listings__other-listings']");
-                await listingsAvailable.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+                await listingsAvailable.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
                 return await listingsAvailable.IsVisibleAsync() ? await listingsAvailable.InnerTextAsync() : "No other listings";
             }
             catch { return "No other listings"; }
@@ -246,7 +268,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             try
             {
                 ILocator currentMarketPrice = currentPage.Locator("//tr[td[text()='Market Price']]/td[2]");
-                await currentMarketPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+                await currentMarketPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
                 return await currentMarketPrice.IsVisibleAsync() ? await currentMarketPrice.InnerTextAsync() : "0";
             }
             catch { return "0"; }
