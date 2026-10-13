@@ -179,10 +179,26 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
 
         public static string CreateTimeStamp()
         {
-            var currentTime = DateTime.Now;
-            string myDate = currentTime.ToString("yyyy_MMM_dd");
-            string myTime = currentTime.ToLongTimeString().Replace(":", ".");
-            return myDate + " " + myTime;
+            // Obtiene el tiempo UTC actual para consistencia en cualquier servidor (Local o GitHub Actions)
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Busca la zona horaria del Pacífico (Soporta Windows "Pacific Standard Time" y Linux/macOS "America/Los_Angeles")
+            TimeZoneInfo pacificZone;
+            try
+            {
+                pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            }
+            catch (TimeZoneNotFoundException)
+            {
+                pacificZone = TimeZoneInfo.FindSystemTimeZoneById("America/Los_Angeles");
+            }
+
+            // Convierte UTC a hora del Pacífico (Maneja automáticamente el cambio de horario de verano/invierno)
+            DateTime pacificTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, pacificZone);
+
+            string myDate = pacificTime.ToString("yyyy_MMM_dd");
+            string myTime = pacificTime.ToLongTimeString().Replace(":", ".");
+            return myDate + " " + myTime + " PST";
         }
 
         public async Task<string> GetItemPrice(IPage currentPage)
