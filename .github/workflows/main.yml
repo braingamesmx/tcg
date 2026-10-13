@@ -41,3 +41,10 @@ jobs:
         
     - name: Run Tests & Push to Google Sheets
       run: dotnet test --no-build --verbosity normal
+      
+    - name: Upload Execution Log
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: execution-log
+        path: execution.log

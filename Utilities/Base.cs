@@ -15,8 +15,8 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
         protected static IBrowser browser;
 
         protected static readonly object _sheetLock = new object();
+        private static readonly object _logLock = new object();
 
-        // Contiene los datos raspados junto con su índice de orden original
         public List<(int SortIndex, IList<object> RowData)> pendingRows = new List<(int, IList<object>)>();
         public List<IList<object>> sheetRows = new List<IList<object>>();
 
@@ -26,12 +26,19 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
         protected const string SpreadsheetId = "1xK3muMQsNsTTOC3w64AvusEHG79r_6q5yo0c1zgmAdU";
         protected const string SheetRange = "SealedItemsPriceTracker!A4:K";
         protected const string CredentialsFilePath = "credentials.json";
+        protected static string LogFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "execution.log");
 
         [OneTimeSetUp]
         public async Task OneTimeSetup()
         {
             stopwatch = new Stopwatch();
             stopwatch.Start();
+
+            // Overwrite log file for a fresh execution run
+            lock (_logLock)
+            {
+                File.WriteAllText(LogFilePath, $"=== TCGPlayer Scraper Log Run Started: {DateTime.Now} ===\n\n");
+            }
 
             ClearStaleSheetData();
 
@@ -47,16 +54,22 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             });
         }
 
+        public static void WriteLog(string message)
+        {
+            lock (_logLock)
+            {
+                File.AppendAllText(LogFilePath, $"[{DateTime.Now:HH:mm:ss}] {message}\n");
+            }
+        }
+
         [OneTimeTearDown]
         public async Task OneTimeTearDown()
         {
             if (browser != null) await browser.CloseAsync();
             playwright?.Dispose();
 
-            // 1. Ordena los resultados al orden exacto del Test Data Provider
             var sortedRows = pendingRows.OrderBy(r => r.SortIndex).ToList();
 
-            // 2. Asigna fórmulas secuenciales en orden de arriba hacia abajo (iniciando en fila 4)
             int rowIndex = 4;
             foreach (var item in sortedRows)
             {
@@ -81,11 +94,10 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             timeStamp = CreateTimeStamp();
             stopwatch.Stop();
             TimeSpan ts = stopwatch.Elapsed;
-            Console.WriteLine(); Console.WriteLine();
-            Console.WriteLine("Elapsed Time is {0:00}:{1:00}:{2:00}.{3}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
-            string executionTime = ts.Hours + ":" + ts.Minutes + ":" + ts.Seconds;
 
-            sheetRows.Add(new List<object> { "999", "Execution Complete", "Created on " + timeStamp, "", "", "", executionTime, "", "", "", "" });
+            WriteLog($"=== Execution Finished in {ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds} ===");
+
+            sheetRows.Add(new List<object> { "999", "Execution Complete", "Created on " + timeStamp, "", "", "", ts.Hours + ":" + ts.Minutes + ":" + ts.Seconds, "", "", "", "" });
 
             PushDataToGoogleSheet();
         }
@@ -108,9 +120,6 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             return (context, page);
         }
 
-        /// <summary>
-        /// Agrega de forma segura los datos raspados junto con su Sort Index original.
-        /// </summary>
         public void AddPendingRow(int sortIndex, IList<object> rawRow)
         {
             lock (_sheetLock)
@@ -139,11 +148,11 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
                 var clearRequest = service.Spreadsheets.Values.Clear(new ClearValuesRequest(), SpreadsheetId, rangeToClear);
                 clearRequest.Execute();
 
-                Console.WriteLine("Stale rows wiped from Tracker (Columns A to K down to row 2000).");
+                WriteLog("Stale rows wiped from Tracker (Columns A to K down to row 2000).");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Warning: Failed to clear automated sheet columns: {ex.Message}");
+                WriteLog($"Warning: Failed to clear automated sheet columns: {ex.Message}");
             }
         }
 
@@ -165,6 +174,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             var updateRequest = service.Spreadsheets.Values.Update(valueRange, SpreadsheetId, SheetRange);
             updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
             updateRequest.Execute();
+            WriteLog("Successfully updated Google Sheet with scraped data.");
         }
 
         public static string CreateTimeStamp()
@@ -180,7 +190,7 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             try
             {
                 ILocator itemPrice = currentPage.Locator("//*[@class='spotlight__price']");
-                await itemPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+                await itemPrice.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
                 return await itemPrice.IsVisibleAsync() ? await itemPrice.InnerTextAsync() : "$0";
             }
             catch { return "$0"; }

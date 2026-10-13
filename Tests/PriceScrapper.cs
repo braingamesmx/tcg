@@ -27,26 +27,39 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Tests
                 decimal shippingVal = decimal.TryParse(currentItemShippingPrice.Replace("$", "").Trim(), out var sp) ? sp : 0;
                 decimal itemMarketPrice = decimal.TryParse(currentItemMarketPrice.Replace("$", "").Trim(), out var mkt) ? mkt : 0;
 
+                string logHeader = $"[Item #{itemNumber}] {itemName}";
+                WriteLog($"{logHeader} | Scraped Raw -> Base: '{currentItemPrice}', Shipping: '{currentItemShippingPrice}', Market: '{currentItemMarketPrice}'");
+
+                if (basePriceVal == 0)
+                {
+                    WriteLog($"  [WARNING] Spotlight Base Price was '$0' or timed out.");
+                }
+
                 if (itemMarketPrice > (basePriceVal + shippingVal))
                 {
+                    WriteLog($"  [OVERRIDE] Market Price (${itemMarketPrice:F2}) > Scraped Total (${basePriceVal + shippingVal:F2}). Overriding calculation to Market Price.");
                     basePriceVal = itemMarketPrice;
                     shippingVal = 0;
                 }
 
                 decimal totalUsd = basePriceVal + shippingVal;
 
-                // Guarda los datos sin procesar junto con el Sort Index
+                // Adds scraped data with original Sort Index
                 AddPendingRow(sortIndex, new List<object> {
                     barCode,                  // 0
                     itemNumber,               // 1
                     itemName,                 // 2
-                    currentItemPrice,         // 3
-                    currentItemShippingPrice, // 4
-                    totalUsd.ToString("F2"),  // 5
+                    currentItemPrice,         // 3: Column D (Base USD)
+                    currentItemShippingPrice, // 4: Column E (Shipping USD)
+                    totalUsd.ToString("F2"),  // 5: Column F (Total USD)
                     itemURL,                  // 6
                     minPriceUsd,              // 7
                     discount                  // 8
                 });
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[ERROR] Failed processing Item #{itemNumber}: {ex.Message}");
             }
             finally
             {
