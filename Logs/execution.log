@@ -1,22 +1,108 @@
-=== TCGPlayer Scraper Log Run Started: 10/13/2026 10:09:12 AM ===
+=== TCGPlayer Scraper Log Run Started: 10/14/2026 1:13:51 PM ===
 
-[10:09:12] Stale rows wiped from Tracker (Columns A to K down to row 2000).
-[10:09:17] [Item #648686] Avatar: The Last Airbender - Commander's Bundle | Scraped Raw -> Base: '$170.00', Shipping: '4.99', Market: '$170.09'
-[10:09:21] [Item #648643] Avatar: The Last Airbender - Play Booster Display | Scraped Raw -> Base: '$125.79', Shipping: '0', Market: '$129.35'
-[10:09:21]   [OVERRIDE] Market Price ($129.35) > Scraped Total ($125.79). Overriding calculation to Market Price.
-[10:09:25] [Item #541235] Bloomburrow - Play Booster Display | Scraped Raw -> Base: '$208.34', Shipping: '0', Market: '$204.93'
-[10:09:29] [Item #618890] FINAL FANTASY - Play Booster Display | Scraped Raw -> Base: '$249.99', Shipping: '0', Market: '$257.08'
-[10:09:29]   [OVERRIDE] Market Price ($257.08) > Scraped Total ($249.99). Overriding calculation to Market Price.
-[10:09:32] [Item #656340] Lorwyn Eclipsed - Bundle | Scraped Raw -> Base: '$68.00', Shipping: '0', Market: '$66.93'
-[10:09:37] [Item #656322] Lorwyn Eclipsed - Collector Booster Display | Scraped Raw -> Base: '$415.97', Shipping: '0', Market: '$415.33'
-[10:09:40] [Item #656312] Lorwyn Eclipsed - Play Booster Display | Scraped Raw -> Base: '$102.96', Shipping: '8.99', Market: '$112.65'
-[10:09:40]   [OVERRIDE] Market Price ($112.65) > Scraped Total ($111.95). Overriding calculation to Market Price.
-[10:09:45] [Item #675615] Marvel Super Heroes - Bundle | Scraped Raw -> Base: '$41.20', Shipping: '0', Market: '$39.83'
-[10:09:49] [Item #675625] Marvel Super Heroes - Draft Night | Scraped Raw -> Base: '$81.00', Shipping: '8.99', Market: '$87.38'
-[10:09:52] [Item #675617] Marvel Super Heroes - Gift Bundle | Scraped Raw -> Base: '$65.00', Shipping: '7.99', Market: '$73.46'
-[10:09:52]   [OVERRIDE] Market Price ($73.46) > Scraped Total ($72.99). Overriding calculation to Market Price.
-[10:09:56] [Item #675603] Marvel Super Heroes - Play Booster Display | Scraped Raw -> Base: '$109.94', Shipping: '0', Market: '$111.84'
-[10:09:56]   [OVERRIDE] Market Price ($111.84) > Scraped Total ($109.94). Overriding calculation to Market Price.
-[10:10:00] [Item #675634] Marvel Super Heroes Commander Deck - Avengers Assemble | Scraped Raw -> Base: '$47.48', Shipping: '0', Market: '$46.03'
-[10:10:00] === Execution Finished in 00:00:48.370 ===
-[10:10:01] Successfully updated Google Sheet with scraped data.
+[13:13:52] Stale rows wiped from Tracker (Columns A to K down to row 2000).
+[13:14:07] [Item #648686] Avatar: The Last Airbender - Commander's Bundle | Scraped Raw -> Base: '$170.00', Shipping: '4.99', Market: '$168.48'
+[13:14:11] [Item #648643] Avatar: The Last Airbender - Play Booster Display | Scraped Raw -> Base: '$125.00', Shipping: '0', Market: '$128.12'
+[13:14:11]   [OVERRIDE] Market Price ($128.12) > Scraped Total ($125.00). Overriding calculation to Market Price.
+[13:14:15] [Item #541235] Bloomburrow - Play Booster Display | Scraped Raw -> Base: '$204.50', Shipping: '9.99', Market: '$205.04'
+[13:14:19] [Item #618890] FINAL FANTASY - Play Booster Display | Scraped Raw -> Base: '$228.89', Shipping: '14.99', Market: '$252.58'
+[13:14:19]   [OVERRIDE] Market Price ($252.58) > Scraped Total ($243.88). Overriding calculation to Market Price.
+[13:14:23] [Item #656340] Lorwyn Eclipsed - Bundle | Scraped Raw -> Base: '$67.99', Shipping: '0', Market: '$67.17'
+[13:14:27] [Item #656322] Lorwyn Eclipsed - Collector Booster Display | Scraped Raw -> Base: '$415.00', Shipping: '0.99', Market: '$414.69'
+[13:14:31] [Item #656312] Lorwyn Eclipsed - Play Booster Display | Scraped Raw -> Base: '$109.94', Shipping: '0', Market: '$112.42'
+[13:14:31]   [OVERRIDE] Market Price ($112.42) > Scraped Total ($109.94). Overriding calculation to Market Price.
+[13:14:35] [Item #675615] Marvel Super Heroes - Bundle | Scraped Raw -> Base: '$40.65', Shipping: '0', Market: '$40.63'
+[13:14:39] [Item #675625] Marvel Super Heroes - Draft Night | Scraped Raw -> Base: '$81.00', Shipping: '8.99', Market: '$87.38'
+[13:14:43] [Item #675617] Marvel Super Heroes - Gift Bundle | Scraped Raw -> Base: '$74.95', Shipping: '0', Market: '$73.01'
+[13:14:47] [Item #675603] Marvel Super Heroes - Play Booster Display | Scraped Raw -> Base: '$109.95', Shipping: '0', Market: '$108.74'
+[13:14:51] [Item #675634] Marvel Super Heroes Commander Deck - Avengers Assemble | Scraped Raw -> Base: '$47.47', Shipping: '0', Market: '$46.38'
+[13:14:55] [Item #675631] Marvel Super Heroes Commander Deck - Doom Prevails | Scraped Raw -> Base: '$61.99', Shipping: '4.99', Market: '$59.46'
+[13:14:59] [Item #675632] Marvel Super Heroes Commander Deck - The Fantastic Four | Scraped Raw -> Base: '$28.00', Shipping: '9.99', Market: '$34.14'
+[13:15:04] [Item #675633] Marvel Super Heroes Commander Deck - Wakanda Forever | Scraped Raw -> Base: '$33.21', Shipping: '6.00', Market: '$33.82'
+[13:15:08] [Item #675619] Marvel Super Heroes Scene Box - Heroes United | Scraped Raw -> Base: '$23.88', Shipping: '0', Market: '$19.01'
+[13:15:12] [Item #675620] Marvel Super Heroes Scene Box - Villains Unleashed | Scraped Raw -> Base: '$21.38', Shipping: '0', Market: '$20.19'
+[13:15:16] [Item #692989] Reality Fracture Commander Deck - Multiverse Reforged | Scraped Raw -> Base: '$51.89', Shipping: '0', Market: '$51.81'
+[13:15:20] [Item #675561] Secrets of Strixhaven - Bundle | Scraped Raw -> Base: '$46.74', Shipping: '0', Market: '$48.74'
+[13:15:20]   [OVERRIDE] Market Price ($48.74) > Scraped Total ($46.74). Overriding calculation to Market Price.
+[13:15:24] [Item #675555] Secrets of Strixhaven - Play Booster Display | Scraped Raw -> Base: '$141.36', Shipping: '0', Market: '$139.62'
+[13:15:29] [Item #675568] Secrets of Strixhaven Commander Deck - Prismari Artistry | Scraped Raw -> Base: '$44.84', Shipping: '0', Market: '$44.97'
+[13:15:29]   [OVERRIDE] Market Price ($44.97) > Scraped Total ($44.84). Overriding calculation to Market Price.
+[13:15:33] [Item #657863] Teenage Mutant Ninja Turtles - Pizza Bundle | Scraped Raw -> Base: '$90.02', Shipping: '0', Market: '$92.80'
+[13:15:33]   [OVERRIDE] Market Price ($92.80) > Scraped Total ($90.02). Overriding calculation to Market Price.
+[13:15:37] [Item #657849] Teenage Mutant Ninja Turtles - Play Booster Display | Scraped Raw -> Base: '$108.90', Shipping: '0', Market: '$107.32'
+[13:15:41] [Item #657865] Teenage Mutant Ninja Turtles Commander Deck - Turtle Power | Scraped Raw -> Base: '$58.41', Shipping: '0', Market: '$58.65'
+[13:15:41]   [OVERRIDE] Market Price ($58.65) > Scraped Total ($58.41). Overriding calculation to Market Price.
+[13:15:45] [Item #692966] The Hobbit - Bundle | Scraped Raw -> Base: '$52.92', Shipping: '0', Market: '$55.30'
+[13:15:45]   [OVERRIDE] Market Price ($55.30) > Scraped Total ($52.92). Overriding calculation to Market Price.
+[13:15:49] [Item #692960] The Hobbit - Play Booster Display | Scraped Raw -> Base: '$147.76', Shipping: '0', Market: '$146.22'
+[13:15:53] [Item #692968] The Hobbit Scene Box - Crack the Plates | Scraped Raw -> Base: '$49.98', Shipping: '0', Market: '$49.52'
+[13:15:57] [Item #692969] The Hobbit Scene Box - Treasures of Smaug | Scraped Raw -> Base: '$61.83', Shipping: '0', Market: '$61.23'
+[13:16:01] [Item #682789] Double Pack Set Vol. 10 - Adventure on Kami's Island (OP15-EB04) | Scraped Raw -> Base: '$36.50', Shipping: '2.00', Market: '$38.22'
+[13:16:06] [Item #693364] Double Pack Set Vol. 11 - The Time of Battle (OP16) | Scraped Raw -> Base: '$30.19', Shipping: '0.59', Market: '$29.97'
+[13:16:10] [Item #666578] Double Pack Set Vol. 9 - The Azure Sea's Seven (OP14-EB04) | Scraped Raw -> Base: '$38.99', Shipping: '1.99', Market: '$35.26'
+[13:16:14] [Item #561689] Double Pack Set Volume 5 - Two Legends (OP08) | Scraped Raw -> Base: '$59.94', Shipping: '0', Market: '$44.79'
+[13:16:19] [Item #666891] Extra Booster: One Piece Heroines Edition Box - Extra Booster EB03 | Scraped Raw -> Base: '$301.99', Shipping: '14.99', Market: '$317.92'
+[13:16:19]   [OVERRIDE] Market Price ($317.92) > Scraped Total ($316.98). Overriding calculation to Market Price.
+[13:16:23] [Item #704169] 30th Celebration Binder Collection | Scraped Raw -> Base: '$109.09', Shipping: '0', Market: '$109.55'
+[13:16:23]   [OVERRIDE] Market Price ($109.55) > Scraped Total ($109.09). Overriding calculation to Market Price.
+[13:16:27] [Item #704171] 30th Celebration Booster Bundle | Scraped Raw -> Base: '$71.00', Shipping: '5.00', Market: '$72.98'
+[13:16:31] [Item #704143] 30th Celebration Elite Trainer Box | Scraped Raw -> Base: '$135.47', Shipping: '2.00', Market: '$135.39'
+[13:16:36] [Item #704168] 30th Celebration Greninja ex Box | Scraped Raw -> Base: '$59.64', Shipping: '0', Market: '$54.67'
+[13:16:40] [Item #704182] 30th Celebration Mini Tin | Scraped Raw -> Base: '$35.86', Shipping: '0', Market: '$31.31'
+[13:16:44] [Item #704153] 30th Celebration Poster Collection | Scraped Raw -> Base: '$38.44', Shipping: '0', Market: '$37.06'
+[13:16:48] [Item #704146] 30th Celebration Tech Sticker Collection | Scraped Raw -> Base: '$36.00', Shipping: '1.99', Market: '$33.89'
+[13:16:48] [Item #672434] Ascended Heroes Booster Pack - ME | Precio Dinamico = 'No'. Bypassed TCGPlayer web scraping. Using Min USD ($10.00).
+[13:16:52] [Item #666906] Ascended Heroes Collection - Erika (3-Tab) | Scraped Raw -> Base: '$28.50', Shipping: '2.00', Market: '$30.59'
+[13:16:52]   [OVERRIDE] Market Price ($30.59) > Scraped Total ($30.50). Overriding calculation to Market Price.
+[13:16:57] [Item #668496] Ascended Heroes Elite Trainer Box | Scraped Raw -> Base: '$147.00', Shipping: '2.00', Market: '$146.64'
+[13:17:01] [Item #630430] Black Bolt Binder Collection | Scraped Raw -> Base: '$79.96', Shipping: '0', Market: '$79.80'
+[13:17:05] [Item #242807] Celebrations Collection Dragapult Prime | Scraped Raw -> Base: '$99.99', Shipping: '0', Market: '$78.62'
+[13:17:09] [Item #242811] Celebrations Elite Trainer Box | Scraped Raw -> Base: '$300.00', Shipping: '4.99', Market: '$344.80'
+[13:17:09]   [OVERRIDE] Market Price ($344.80) > Scraped Total ($304.99). Overriding calculation to Market Price.
+[13:17:13] [Item #684458] Chaos Rising 3-Pack Blister | Scraped Raw -> Base: '$22.95', Shipping: '0', Market: '$21.42'
+[13:17:18] [Item #684444] Chaos Rising Booster Box | Scraped Raw -> Base: '$160.00', Shipping: '20.00', Market: '$185.15'
+[13:17:18]   [OVERRIDE] Market Price ($185.15) > Scraped Total ($180.00). Overriding calculation to Market Price.
+[13:17:22] [Item #684456] Chaos Rising Booster Bundle | Scraped Raw -> Base: '$35.59', Shipping: '0', Market: '$35.99'
+[13:17:22]   [OVERRIDE] Market Price ($35.99) > Scraped Total ($35.59). Overriding calculation to Market Price.
+[13:17:26] [Item #684450] Chaos Rising Elite Trainer Box | Scraped Raw -> Base: '$72.15', Shipping: '0', Market: '$70.90'
+[13:17:30] [Item #673436] First Partner Illustration Collection Series 1 | Scraped Raw -> Base: '$63.98', Shipping: '0', Market: '$62.90'
+[13:17:34] [Item #688712] First Partner Illustration Collection Series 2 | Scraped Raw -> Base: '$27.98', Shipping: '0', Market: '$26.18'
+[13:17:38] [Item #684106] League Battle Deck Mega Lucario ex | Scraped Raw -> Base: '$16.33', Shipping: '0', Market: '$15.04'
+[13:17:42] [Item #671250] Mega Charizard Tin | Scraped Raw -> Base: '$42.96', Shipping: '2.00', Market: '$45.59'
+[13:17:42]   [OVERRIDE] Market Price ($45.59) > Scraped Total ($44.96). Overriding calculation to Market Price.
+[13:17:46] [Item #654213] Mega Charizard X ex Ultra Premium Collection | Scraped Raw -> Base: '$226.99', Shipping: '0', Market: '$224.83'
+[13:17:50] [Item #644279] Mega Evolution Elite Trainer Box Mega Gardevoir | Scraped Raw -> Base: '$124.40', Shipping: '0', Market: '$121.28'
+[13:17:54] [Item #648394] Mega Evolution Elite Trainer Box Mega Lucario | Scraped Raw -> Base: '$120.00', Shipping: '5.00', Market: '$128.90'
+[13:17:54]   [OVERRIDE] Market Price ($128.90) > Scraped Total ($125.00). Overriding calculation to Market Price.
+[13:17:58] [Item #649392] Mega Heroes Mini Tin Display | Scraped Raw -> Base: '$222.22', Shipping: '0', Market: '$275.45'
+[13:17:58]   [OVERRIDE] Market Price ($275.45) > Scraped Total ($222.22). Overriding calculation to Market Price.
+[13:18:02] [Item #656487] Mega Lucario ex Premium Figure Collection | Scraped Raw -> Base: '$31.00', Shipping: '14.99', Market: '$54.83'
+[13:18:02]   [OVERRIDE] Market Price ($54.83) > Scraped Total ($45.99). Overriding calculation to Market Price.
+[13:18:06] [Item #512813] Paradox Rift Elite Trainer Box Iron Valiant | Scraped Raw -> Base: '$135.45', Shipping: '0', Market: '$135.78'
+[13:18:06]   [OVERRIDE] Market Price ($135.78) > Scraped Total ($135.45). Overriding calculation to Market Price.
+[13:18:10] [Item #512815] Paradox Rift Elite Trainer Box Roaring Moon | Scraped Raw -> Base: '$142.00', Shipping: '0', Market: '$133.63'
+[13:18:15] [Item #706309] Perfect Order 3 Pack Blister | Scraped Raw -> Base: '$598.95', Shipping: '0', Market: '-'
+[13:18:19] [Item #672394] Perfect Order Booster Box | Scraped Raw -> Base: '$174.00', Shipping: '0', Market: '$174.59'
+[13:18:19]   [OVERRIDE] Market Price ($174.59) > Scraped Total ($174.00). Overriding calculation to Market Price.
+[13:18:23] [Item #672396] Perfect Order Booster Bundle | Scraped Raw -> Base: '$40.90', Shipping: '0', Market: '$39.17'
+[13:18:27] [Item #672401] Perfect Order Elite Trainer Box | Scraped Raw -> Base: '$73.30', Shipping: '0', Market: '$72.99'
+[13:18:31] [Item #654160] Phantasmal Flames Booster Bundle | Scraped Raw -> Base: '$80.00', Shipping: '4.99', Market: '$85.07'
+[13:18:31]   [OVERRIDE] Market Price ($85.07) > Scraped Total ($84.99). Overriding calculation to Market Price.
+[13:18:31] [Item #654144] Phantasmal Flames Booster Pack - ME02 | Precio Dinamico = 'No'. Bypassed TCGPlayer web scraping. Using Min USD ($10.00).
+[13:18:35] [Item #654136] Phantasmal Flames Elite Trainer Box | Scraped Raw -> Base: '$150.00', Shipping: '3.00', Market: '$146.40'
+[13:18:39] [Item #692939] Pitch Black Booster Box | Scraped Raw -> Base: '$183.97', Shipping: '0', Market: '$183.69'
+[13:18:43] [Item #692947] Pitch Black Elite Trainer Box | Scraped Raw -> Base: '$79.99', Shipping: '0', Market: '$78.81'
+[13:18:48] [Item #650799] Prismatic Evolutions Premium Figure Collection | Scraped Raw -> Base: '$216.60', Shipping: '0', Market: '$217.22'
+[13:18:48]   [OVERRIDE] Market Price ($217.22) > Scraped Total ($216.60). Overriding calculation to Market Price.
+[13:18:52] [Item #565606] Surging Sparks Booster Box | Scraped Raw -> Base: '$294.01', Shipping: '7.99', Market: '$295.27'
+[13:18:57] [Item #565630] Surging Sparks Elite Trainer Box | Scraped Raw -> Base: '$125.76', Shipping: '0', Market: '$120.78'
+[13:19:01] [Item #656997] Team Rocket’s Moltres ex Ultra-Premium Collection | Scraped Raw -> Base: '$315.00', Shipping: '9.99', Market: '$328.90'
+[13:19:01]   [OVERRIDE] Market Price ($328.90) > Scraped Total ($324.99). Overriding calculation to Market Price.
+[13:19:05] [Item #635368] Origins - Booster Display | Scraped Raw -> Base: '$227.00', Shipping: '0', Market: '$224.79'
+[13:19:09] [Item #661934] Spiritforged - Booster Display | Scraped Raw -> Base: '$175.00', Shipping: '0', Market: '$177.18'
+[13:19:09]   [OVERRIDE] Market Price ($177.18) > Scraped Total ($175.00). Overriding calculation to Market Price.
+[13:19:13] [Item #678162] Unleashed - Vault Bundle | Scraped Raw -> Base: '$67.90', Shipping: '0', Market: '$67.36'
+[13:19:17] [Item #693380] Vendetta - Booster Display | Scraped Raw -> Base: '$140.22', Shipping: '0', Market: '$139.64'
+[13:19:21] [Item #697971] Vendetta - Showdown Decks: Zed vs Shen | Scraped Raw -> Base: '$16.40', Shipping: '0', Market: '$15.67'
+[13:19:22] === Execution Finished in 00:05:30.392 ===
+[13:19:23] Successfully updated Google Sheet with scraped data.

@@ -155,10 +155,12 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             try
             {
                 GoogleCredential credential;
+#pragma warning disable CS0618
                 using (var stream = new FileStream(CredentialsFilePath, FileMode.Open, FileAccess.Read))
                 {
                     credential = GoogleCredential.FromStream(stream).CreateScoped(SheetsService.Scope.Spreadsheets);
                 }
+#pragma warning restore CS0618
 
                 var service = new SheetsService(new BaseClientService.Initializer()
                 {
@@ -181,10 +183,12 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
         private void PushDataToGoogleSheet()
         {
             GoogleCredential credential;
+#pragma warning disable CS0618
             using (var stream = new FileStream(CredentialsFilePath, FileMode.Open, FileAccess.Read))
             {
                 credential = GoogleCredential.FromStream(stream).CreateScoped(SheetsService.Scope.Spreadsheets);
             }
+#pragma warning restore CS0618
 
             var service = new SheetsService(new BaseClientService.Initializer()
             {
@@ -198,7 +202,6 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             updateRequest.Execute();
             WriteLog("Successfully updated Google Sheet with scraped data.");
         }
-
         public static string CreateTimeStamp()
         {
             // Obtiene el tiempo UTC actual para consistencia en cualquier servidor (Local o GitHub Actions)
