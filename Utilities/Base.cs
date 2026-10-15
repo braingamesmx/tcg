@@ -97,17 +97,17 @@ namespace TCGPlayerPriceScrapper_PlaywrightVersion.Utilities
             {
                 var d = item.RowData;
                 sheetRows.Add(new List<object> {
-                    d[0],                                           // A: Barcode
-                    d[1],                                           // B: Item #
-                    d[2],                                           // C: Nombre
-                    d[3],                                           // D: Base USD
-                    d[4],                                           // E: Shipping USD
-                    d[5],                                           // F: Total USD
-                    $"=F{rowIndex}*$C$1*(1 - K{rowIndex})",         // G: Total MXN Formula
-                    d[6],                                           // H: URL
-                    d[7],                                           // I: Min USD
-                    $"=I{rowIndex}*$C$1",                           // J: Min MXN Formula
-                    d[8]                                            // K: Descuento
+                    d[0],                                               // A: Barcode
+                    d[1],                                               // B: Item #
+                    d[2],                                               // C: Nombre
+                    d[3],                                               // D: Base USD
+                    d[4],                                               // E: Shipping USD
+                    d[5],                                               // F: Total USD                                                                        
+                    $"=ROUNDUP(F{rowIndex}*$C$1*(1 - K{rowIndex}), 0)", // G: Total MXN Formula / NEW: Always rounds up to the nearest whole number (0 decimals)
+                    d[6],                                               // H: URL
+                    d[7],                                               // I: Min USD
+                    $"=I{rowIndex}*$C$1",                               // J: Min MXN Formula
+                    d[8]                                                // K: Descuento
                 });
 
                 rowIndex++;
