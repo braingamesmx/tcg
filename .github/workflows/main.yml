@@ -3,7 +3,7 @@ name: TCGPlayer Price Scrapper
 on:
   workflow_dispatch: # Permite ejecutarlo manualmente desde la pestaña Actions
   schedule:
-    - cron: '0 18 * * *' # Opcional: Ejecutar todos los días a las 18:00 UTC
+    - cron: '08 18 * * *' # Executes every day at 18:08 UTC (11:08 AM PDT)
 
 jobs:
   build-and-test:
